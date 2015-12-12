@@ -1,3 +1,5 @@
-<App Theme="Basic">
-</App>
+<App Theme="Basic" ux:AutoCtor="false">
+  <Panel ux:Name="scene">
 
+  </Panel>
+</App>
