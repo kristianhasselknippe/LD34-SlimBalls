@@ -1,11 +1,35 @@
 <App Theme="Basic" ux:AutoCtor="false">
-	<Panel ux:Name="pointerPanel" HitTestMode="LocalBoundsAndChildren">
-		<Panel ux:Name="scene">
+	<Panel>
+		<Panel ux:Name="menu">
+			<Text FontSize="40" TextColor="#0620f3" Value="Slim Balls" Alignment="TopCenter" Offset="0,200"/>
+			<Panel Alignment="Center" HitTestMode="LocalBoundsAndChildren">
+				<Text Value="Start Game" FontSize="30" Alignment="Center" TextColor="#0620f3"/>
+				<Rectangle CornerRadius="40" MinHeight="80" MinWidth="200">
+					<Stroke Width="4" Brush="#0620f3" />
+				</Rectangle>
+				<Clicked>
+					<Toggle Target="gameStarted" />
+				</Clicked>
+			</Panel>
+			<WhileTrue ux:Name="gameStarted" >
+				<Change blur.Radius="0" Duration="1"/>
+				<Change menu.Opacity="0" Duration="0.8"/>
+			</WhileTrue>
 
-
-			<Metafill Radius="8" Threshold="0.5" Smoothing="0.01" Color="#f2f" />
 
 		</Panel>
-		<!--<DetectEdges Spread="1" Strength="10" BackgroundColor="#00f2" EdgeColor="#000f"/>-->
+
+
+
+		<Panel ux:Name="pointerPanel" HitTestMode="LocalBoundsAndChildren">
+			<Blur Radius="30" ux:Name="blur"/>
+			<Panel ux:Name="scene">
+
+
+				<Metafill Radius="8" Threshold="0.5" Smoothing="0.01" Color="#f2f" />
+
+			</Panel>
+			<!--<DetectEdges Spread="1" Strength="10" BackgroundColor="#00f2" EdgeColor="#000f"/>-->
+		</Panel>
 	</Panel>
 </App>
