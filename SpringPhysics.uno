@@ -12,7 +12,6 @@ public class SpringPhysics
 	List<Spring> _springs = new List<Spring>();
 
 
-	public void Step
 }
 
 public class Spring : PhysicsRule
