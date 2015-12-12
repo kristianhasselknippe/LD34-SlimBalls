@@ -14,6 +14,7 @@ public class Scene
     {
         _scenePanel = p;
 		UpdateManager.AddAction(Update);
+
     }
 
     public void AddGameObject(Element e)
@@ -40,6 +41,8 @@ public class Scene
 			OnAfterPhysic(dt);
 	}
 
+
+
 }
 
 public partial class MainView
@@ -49,7 +52,11 @@ public partial class MainView
         InitializeUX();
 
         var s = new Scene(scene);
-        var player = new Player(s, s.SpringPhysics);
+		var controller = new PlayerController(pointerPanel);
+        var player = new Player(s, s.SpringPhysics, controller);
         s.AddGameObject(player);
+
     }
+
+
 }

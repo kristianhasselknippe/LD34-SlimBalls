@@ -1,5 +1,5 @@
 <App Theme="Basic" ux:AutoCtor="false">
-	<Panel>
+	<Panel ux:Name="pointerPanel" HitTestMode="LocalBoundsAndChildren">
 		<Panel ux:Name="scene">
 
 

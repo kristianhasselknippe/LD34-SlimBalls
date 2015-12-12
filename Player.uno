@@ -51,17 +51,21 @@ public partial class Player : Panel
         }
     }
 
+	readonly PlayerController PlayerController;
+
     readonly SpringPhysics _springPhysics;
-    public Player(Scene scene, SpringPhysics springPhysics)
+    public Player(Scene scene, SpringPhysics springPhysics, PlayerController controller)
     {
         InitializeUX();
         _scene = scene;
         _springPhysics = springPhysics;
 
+		PlayerController = controller;
+
         MainParticle = CreateParticleElement(new Particle() { Mass = 10.f });
 
 
-		for (var i = 0; i < 10; i++)
+		for (var i = 0; i < 20; i++)
 		{
 			var dummyParticle2 = new Particle();
 			var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
@@ -74,10 +78,23 @@ public partial class Player : Panel
 
 
         scene.OnAfterPhysic += OnUpdate;
+		scene.OnBeforePhysic += OnBefore;
     }
+
+	void OnBefore(float dt)
+	{
+
+	}
 
     void OnUpdate(float dt)
     {
+		var pointerPos = PlayerController.PointerPosition;
+		var pointerForce = float2(0);
+		if (Vector.Distance(pointerPos, MainParticle.Particle.Position) > 0.1)
+			pointerForce = Vector.Normalize(pointerPos - MainParticle.Particle.Position) * 1000;
+
+		MainParticle.Particle.Position += pointerForce * dt;
+
         UpdateParticle(dt, MainParticle);
         foreach(var particle in _particles)
         {
@@ -104,6 +121,9 @@ public partial class Player : Panel
         var spring = new Spring(MainParticle.Particle, particle, 40f);
         _springPhysics.AddSpring(spring);
         _particles.Add(CreateParticleElement(particle));
+
+		if (_particles.Count >= 2)
+			_springPhysics.AddSpring(new Spring(particle, _particles[_particles.Count - 2].Particle, 80f));
     }
 
     public ParticleElement CreateParticleElement(Particle particle)
