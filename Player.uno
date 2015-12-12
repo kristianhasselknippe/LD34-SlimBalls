@@ -91,9 +91,9 @@ public partial class Player : Panel
 		var pointerPos = PlayerController.PointerPosition;
 		var pointerForce = float2(0);
 		if (Vector.Distance(pointerPos, MainParticle.Particle.Position) > 0.1)
-			pointerForce = Vector.Normalize(pointerPos - MainParticle.Particle.Position) * 1000;
+			pointerForce = Vector.Normalize(pointerPos - MainParticle.Particle.Position) * 10000;
 
-		MainParticle.Particle.Position += pointerForce * dt;
+		MainParticle.Particle.Velocity += pointerForce * dt;
 
         UpdateParticle(dt, MainParticle);
         foreach(var particle in _particles)
@@ -108,7 +108,8 @@ public partial class Player : Panel
         var p = particle.Particle;
 
         var acc = p.ForceAccumulator / p.Mass;
-        p.Position += p.Velocity * dt + 0.5f * acc * dt * dt;
+        if (Vector.Length(p.Velocity) > 1.f)
+            p.Position += p.Velocity * dt;// + 0.5f * acc * dt * dt;
         p.Velocity += acc * dt;
         p.ForceAccumulator = float2(0);
 

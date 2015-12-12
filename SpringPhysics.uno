@@ -43,7 +43,7 @@ public class Spring : PhysicsRule
 	public Particle P2 { get; set; }
 
 
-	public Spring(Particle p1, Particle p2, float length, float damping = 0.2f, float coef = 0.01f)
+	public Spring(Particle p1, Particle p2, float length, float damping = 0.05f, float coef = 0.01f)
 	{
 		Damping = damping;
 		Coef = coef;
@@ -73,7 +73,7 @@ public class Spring : PhysicsRule
 		var mass = GetReducedMass();
 		float dist = Vector.Distance(P1.Position, P2.Position);
 		float2 between = P2.Position - P1.Position;
-		if(dist < 0.001)
+		if(dist < 1.f)
 		{
 			return;
 		}
