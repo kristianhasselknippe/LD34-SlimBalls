@@ -12,6 +12,15 @@ public class Particle
 
     public float Mass;
     public float Radius;
+
+    public override string ToString()
+    {
+        return "Position: " + Position + "\n"
+        + "Velocity: " + Velocity + "\n"
+        + "ForceAccumulator: " + ForceAccumulator + "\n"
+        + "Mass: " + Mass + "\n"
+        + "Radius: " + Radius;
+    }
 }
 
 class ParticleElement
@@ -49,9 +58,10 @@ public partial class Player : Panel
         _scene = scene;
         _springPhysics = springPhysics;
 
-        MainParticle = CreateParticleElement(new Particle());
+        MainParticle = CreateParticleElement(new Particle() { Mass = 10.f });
 
         var dummyParticle2 = new Particle();
+        dummyParticle2.Mass = 10.f;
         dummyParticle2.Position.X = 400;
         dummyParticle2.Position.Y = 50;
         AddParticle(dummyParticle2);
@@ -74,8 +84,7 @@ public partial class Player : Panel
 
         p.Position += p.Velocity * dt;
 
-        debug_log "Position: " + p.Position;
-        debug_log "Velocity: " + p.Velocity;
+        debug_log p + "\n";
 
         translation.X = p.Position.X;
         translation.Y = p.Position.Y;
