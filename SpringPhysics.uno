@@ -20,11 +20,11 @@ public class Spring : PhysicsRule
 	public float Coef { get; set; }
 	public float Length { get; set; }
 
-	Particle P1 { get; set; }
-	Particle P2 { get; set; }
+	public Particle P1 { get; set; }
+	public Particle P2 { get; set; }
 
 
-	public Spring(Particle b1, Particle b2, float length; float damping = 0.001, float coef = 0.001)
+	public Spring(Particle p1, Particle p2, float length, float damping = 0.001f, float coef = 0.001f)
 	{
 		Damping = damping;
 		Coef = coef;
@@ -42,14 +42,14 @@ public class Spring : PhysicsRule
 	{
 		var massRed = GetReducedMass();
 
-		var x = Vector.Length(P1.Position, P2.Position) - Length;
+		var x = Vector.Distance(P1.Position, P2.Position) - Length;
 
 		var f = -((massRed / dt*dt) * Coef) * x - (massRed/dt * Damping);
 	}
 
 	public void Step(float dt)
 	{
-		var f = GetForce();
+		var f = GetForce(dt);
 
 		P1.Velocity *= dt * f;
 		P2.Velocity *= dt * f;
