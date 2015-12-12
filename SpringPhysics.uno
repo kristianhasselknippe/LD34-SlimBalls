@@ -11,6 +11,11 @@ public class SpringPhysics
 {
 	List<Spring> _springs = new List<Spring>();
 
+	public void ClearSprings()
+	{
+		_springs.Clear();
+	}
+
 	public void AddSpring(Spring s)
 	{
 		_springs.Add(s);

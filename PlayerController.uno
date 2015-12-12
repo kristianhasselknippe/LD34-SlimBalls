@@ -7,6 +7,7 @@ public class PlayerController
 {
 
 	public float2 PointerPosition { get; set; }
+	public bool HasPosition = false;
 
 	Element element;
 
@@ -24,6 +25,12 @@ public class PlayerController
 	void OnPointerPressed(object sender, PointerPressedArgs args)
 	{
 		down = args.PointIndex;
+		var sizei = Application.Current.Window.ClientSize;
+		var size = float2(sizei.X, sizei.Y);
+		//debug_log("ClientSize: " + size);
+		PointerPosition = args.WindowPoint - size/2.0f;
+
+		HasPosition = true;
 	}
 
 	void OnPointerMoved(object sender, PointerMovedArgs args)
@@ -42,7 +49,10 @@ public class PlayerController
 	void OnPointerReleased(object sender, PointerReleasedArgs args)
 	{
 		if (args.PointIndex == down)
+		{
 			down = -1;
+			HasPosition = false;
+		}
 	}
 
 }

@@ -123,8 +123,16 @@ public partial class Player : Panel
         _springPhysics.AddSpring(spring);
         _particles.Add(CreateParticleElement(particle));
 
+
+		_springPhysics.ClearSprings();
 		if (_particles.Count >= 2)
-			_springPhysics.AddSpring(new Spring(particle, _particles[_particles.Count - 2].Particle, 80f));
+		{
+			for (var i = 0; i < _particles.Count - 1; i++)
+			{
+				_springPhysics.AddSpring(new Spring(particle, _particles[_particles.Count - 2].Particle, 80f));
+			}
+			_springPhysics.AddSpring(new Spring(_particles[_particles.Count - 1].Particle,_particles[0].Particle , 80f));
+		}
     }
 
     public ParticleElement CreateParticleElement(Particle particle)
