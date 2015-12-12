@@ -83,8 +83,8 @@ public partial class Player : Panel
         var p = particle.Particle;
 
         p.Position += p.Velocity * dt;
-
-        debug_log p + "\n";
+        p.Velocity += (p.ForceAccumulator / p.Mass) * dt;
+        p.ForceAccumulator = float2(0);
 
         translation.X = p.Position.X;
         translation.Y = p.Position.Y;

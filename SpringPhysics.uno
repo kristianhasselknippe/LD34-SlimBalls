@@ -76,8 +76,8 @@ public class Spring : PhysicsRule
 	{
 		var f = GetForce(dt);
 
-		P1.Velocity *= dt * f;
-		P2.Velocity *= dt * f;
+		P1.ForceAccumulator += f;
+		P2.ForceAccumulator += f;
 	}
 
 }
