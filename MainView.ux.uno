@@ -13,6 +13,7 @@ public class Scene
     public Scene(Panel p)
     {
         _scenePanel = p;
+		UpdateManager.AddAction(Update);
     }
 
     public void AddGameObject(Element e)
@@ -20,6 +21,25 @@ public class Scene
         _gameObjects.Add(e);
         _scenePanel.Children.Add(e);
     }
+
+	public event Action<float> OnBeforePhysic;
+	public event Action<float> OnAfterPhysic;
+
+	public SpringPhysics SpringPhysics = new SpringPhysics();
+
+	public void Update()
+	{
+		var dt = Fuse.Time.FrameIntervalFloat;
+
+		if (OnBeforePhysic != null)
+			OnBeforePhysic(dt);
+
+		SpringPhysics.Step(dt);
+
+		if (OnAfterPhysic != null)
+			OnAfterPhysic(dt);
+	}
+
 }
 
 public partial class MainView

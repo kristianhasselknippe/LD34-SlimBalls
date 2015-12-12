@@ -11,6 +11,25 @@ public class SpringPhysics
 {
 	List<Spring> _springs = new List<Spring>();
 
+	public void AddSpring(Spring s)
+	{
+		_springs.Add(s);
+	}
+
+	public void RemoveSpring(Spring s)
+	{
+		if (_springs.Contains(s))
+			_springs.Remove(s);
+	}
+
+	public void Step(float dt)
+	{
+		foreach (var s in _springs)
+		{
+			s.Step(dt);
+		}
+	}
+
 }
 
 public class Spring : PhysicsRule
