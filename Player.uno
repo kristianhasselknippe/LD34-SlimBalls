@@ -71,6 +71,7 @@ public partial class Player : Panel
 
     void OnUpdate(float dt)
     {
+        UpdateParticle(dt, MainParticle);
         foreach(var particle in _particles)
         {
             UpdateParticle(dt, particle);
