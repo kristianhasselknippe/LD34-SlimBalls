@@ -81,8 +81,9 @@ public class Spring : PhysicsRule
 	{
 		var f = GetForce(dt);
 
-		P1.ForceAccumulator += f;
-		P2.ForceAccumulator += f;
+		var dir = Vector.Normalize(P1.Position - P2.Position);
+		P1.ForceAccumulator += f * dir;
+		P2.ForceAccumulator += f * -dir;
 
 	}
 
