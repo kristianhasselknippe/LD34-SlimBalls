@@ -1,5 +1,11 @@
 <App Theme="Basic" ux:AutoCtor="false">
-  <Panel ux:Name="scene">
+	<Panel>
+		<Panel ux:Name="scene">
 
-  </Panel>
+
+			<Metafill Radius="8" Threshold="0.5" Smoothing="0.01" Color="#f2f" />
+
+		</Panel>
+		<DetectEdges Spread="1" Strength="10" BackgroundColor="#00f2" EdgeColor="#000f"/>
+	</Panel>
 </App>
