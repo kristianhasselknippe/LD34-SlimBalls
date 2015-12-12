@@ -142,6 +142,7 @@ public partial class Player : Panel
         var spring = new Spring(MainParticle.Particle, particle, 40f);
         _springPhysics.AddSpring(spring);
         _particles.Add(CreateParticleElement(particle));
+
     }
 
     public ParticleElement CreateParticleElement(Particle particle)

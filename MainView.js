@@ -16,6 +16,7 @@ var highScore = Observable();
 
 function addScore(score)
 {
+	console.log("Foobar, " + score);
 	previousScores.add(new Run(score));
 
 	var bestRun = previousRuns.getAt(0);
@@ -34,8 +35,17 @@ function clearScores()
 	save();
 }
 
-HighScore.addedHighScore = addScore;
-HighScore.clearHighScore = clearScores();
+HighScore.addedHighScore = function(score){
+	debug_log("Adding high score");
+	addScore(score);
+};
+HighScore.clearHighScore = function(){
+	debug_log("Clearing from JS");
+	clearScores();
+};
+
+debug_log("Added handlers");
+debug_log(JSON.stringify(HighScore));
 
 function save()
 {

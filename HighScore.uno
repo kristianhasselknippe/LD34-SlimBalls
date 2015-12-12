@@ -18,17 +18,26 @@ public class HighScore : NativeModule
 		AddMember(_addedHighScore);
 		AddMember(_clearedHighScore);
 
+		debug_log("Added members");
+
+		Evaluated += OnJsInitialized;
+
 		Instance = this;
+	}
+
+	void OnJsInitialized(object sender, Uno.EventArgs args)
+	{
+		debug_log("JS was initialized");
 	}
 
 	public static void AddHighScore(float score)
 	{
+		debug_log("Trying to add highscore");
 		HighScore.Instance._addedHighScore.RaiseAsync(score);
 	}
 
 	public static void ClearHighScore()
 	{
-		if (Instance == null) return;
 		HighScore.Instance._clearedHighScore.RaiseAsync();
 	}
 }

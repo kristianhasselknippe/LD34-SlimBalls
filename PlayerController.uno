@@ -52,6 +52,8 @@ public class PlayerController
 		{
 			down = -1;
 			HasPosition = false;
+
+			HighScore.AddHighScore(123);
 		}
 	}
 
