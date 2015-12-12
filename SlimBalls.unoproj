@@ -11,6 +11,7 @@
         "Fuse.Drawing.Primitives",
         "Fuse.Effects",
         "Fuse.Elements",
+		"Fuse.Scripting",
         "Fuse.Entities",
         "Fuse.Gestures",
         "Fuse.Navigation",
