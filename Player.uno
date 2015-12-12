@@ -23,7 +23,7 @@ public class Particle
     }
 }
 
-class ParticleElement
+public class ParticleElement
 {
     public readonly Particle Particle;
     public readonly Element Renderer;
