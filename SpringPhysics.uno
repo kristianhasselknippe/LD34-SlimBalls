@@ -63,7 +63,12 @@ public class Spring : PhysicsRule
 
 		var x = Vector.Distance(P1.Position, P2.Position) - Length;
 
+		debug_log("X: " + x);
+
 		var f = -((massRed / dt*dt) * Coef) * x - (massRed/dt * Damping);
+
+		debug_log("F:" + f);
+
 		return f;
 	}
 
