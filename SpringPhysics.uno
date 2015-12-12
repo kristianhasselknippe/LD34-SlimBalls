@@ -43,7 +43,7 @@ public class Spring : PhysicsRule
 	public Particle P2 { get; set; }
 
 
-	public Spring(Particle p1, Particle p2, float length, float damping = 0.001f, float coef = 0.001f)
+	public Spring(Particle p1, Particle p2, float length, float damping = 0.0001f, float coef = 0.8f)
 	{
 		Damping = damping;
 		Coef = coef;
@@ -59,13 +59,18 @@ public class Spring : PhysicsRule
 
 	float GetForce(float dt)
 	{
+		if (dt < 0.0005)
+			return 0.0f;
 		var massRed = GetReducedMass();
 
 		var x = Vector.Distance(P1.Position, P2.Position) - Length;
 
 		debug_log("X: " + x);
+		debug_log("MassRed: " + massRed);
+		debug_log("DT: " + dt);
 
-		var f = -((massRed / dt*dt) * Coef) * x - (massRed/dt * Damping);
+
+		var f = -((massRed / dt*dt) * Coef * x) - (massRed/dt * Damping);
 
 		debug_log("F:" + f);
 
@@ -78,6 +83,7 @@ public class Spring : PhysicsRule
 
 		P1.ForceAccumulator += f;
 		P2.ForceAccumulator += f;
+
 	}
 
 }
