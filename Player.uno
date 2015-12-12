@@ -28,7 +28,7 @@ class ParticleElement
 
 public partial class Player : Panel
 {
-    readonly Particle MainParticle;
+    readonly ParticleElement MainParticle;
     readonly List<ParticleElement> _particles = new List<ParticleElement>();
     readonly Scene _scene;
 
@@ -42,38 +42,59 @@ public partial class Player : Panel
         }
     }
 
-    public Player(Scene scene)
+    readonly SpringPhysics _springPhysics;
+    public Player(Scene scene, SpringPhysics springPhysics)
     {
         InitializeUX();
         _scene = scene;
-        var dummyParticle = new Particle();
-        dummyParticle.Position.X = 100;
-        AddParticle(dummyParticle);
+        _springPhysics = springPhysics;
+
+        MainParticle = CreateParticleElement(new Particle());
 
         var dummyParticle2 = new Particle();
-        dummyParticle2.Position.X = 0;
+        dummyParticle2.Position.X = 400;
+        dummyParticle2.Position.Y = 50;
         AddParticle(dummyParticle2);
 
-        Update += OnUpdate;
+        scene.OnAfterPhysic += OnUpdate;
     }
 
-    void OnUpdate(object sender, EventArgs args)
+    void OnUpdate(float dt)
     {
         foreach(var particle in _particles)
         {
-            var translation = (Translation)particle.Renderer.Transforms[0];
-            translation.X = particle.Particle.Position.X;
-            translation.Y = particle.Particle.Position.Y;
+            UpdateParticle(dt, particle);
         }
     }
 
+    void UpdateParticle(float dt, ParticleElement particle)
+    {
+        var translation = (Translation)particle.Renderer.Transforms[0];
+        var p = particle.Particle;
+
+        p.Position += p.Velocity * dt;
+
+        debug_log "Position: " + p.Position;
+        debug_log "Velocity: " + p.Velocity;
+
+        translation.X = p.Position.X;
+        translation.Y = p.Position.Y;
+    }
+
     public void AddParticle(Particle particle)
+    {
+        var spring = new Spring(MainParticle.Particle, particle, 40f);
+        _springPhysics.AddSpring(spring);
+        _particles.Add(CreateParticleElement(particle));
+    }
+
+    public ParticleElement CreateParticleElement(Particle particle)
     {
         var particleRenderer = new ParticleRender();
         particleRenderer.Transforms.Add(new Translation());
         _scene.AddGameObject(particleRenderer);
 
-        _particles.Add(new ParticleElement(particle, particleRenderer));
+        return new ParticleElement(particle, particleRenderer);
     }
 
     public void RemoveParticle(Particle particle)

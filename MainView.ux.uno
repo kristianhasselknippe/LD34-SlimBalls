@@ -25,7 +25,7 @@ public class Scene
 	public event Action<float> OnBeforePhysic;
 	public event Action<float> OnAfterPhysic;
 
-	public SpringPhysics SpringPhysics = new SpringPhysics();
+	public readonly SpringPhysics SpringPhysics = new SpringPhysics();
 
 	public void Update()
 	{
@@ -49,7 +49,7 @@ public partial class MainView
         InitializeUX();
 
         var s = new Scene(scene);
-        var player = new Player(s);
+        var player = new Player(s, s.SpringPhysics);
         s.AddGameObject(player);
     }
 }
