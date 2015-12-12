@@ -43,7 +43,7 @@ public class Spring : PhysicsRule
 	public Particle P2 { get; set; }
 
 
-	public Spring(Particle p1, Particle p2, float length, float damping = 0.9f, float coef = 0.5f)
+	public Spring(Particle p1, Particle p2, float length, float damping = 0.2f, float coef = 0.01f)
 	{
 		Damping = damping;
 		Coef = coef;
@@ -57,36 +57,30 @@ public class Spring : PhysicsRule
 		return (P1.Mass * P2.Mass) / (P2.Mass + P2.Mass);
 	}
 
-	float GetForce(float d, Particle p)
+	float2 GetForce(float dt, float reducedMass, float dist, float2 velocity, float2 betweenNormalized)
 	{
 		if (dt < 0.0005)
-			return 0.0f;
-		var massRed = GetReducedMass();
+			return float2(0);
 
-		var x = Vector.Normalize(p.Position) * (Vector.Distance(P1.Position, P2.Position) - Length);
-		var f = -((massRed / dt*dt) * Coef * x) - ((massRed/dt) * Damping) * Vector.Length(p.Velocity);
-
-
-		/*debug_log("X: " + x);
-		debug_log("MassRed: " + massRed);
-		debug_log("DT: " + dt);
-		debug_log("F:" + f);*/
+		var x = betweenNormalized * (dist - Length);
+		var f = -((reducedMass / (dt*dt)) * Coef * x) - ((reducedMass/dt) * Damping * velocity);
 
 		return f;
 	}
 
 	public void Step(float dt)
 	{
-		var f = GetForce(dt);
+		var mass = GetReducedMass();
+		float dist = Vector.Distance(P1.Position, P2.Position);
+		float2 between = P2.Position - P1.Position;
+		if(dist < 0.001)
+		{
+			return;
+		}
 
-		var dist = Vector.Distance(P1.Position, P2.Position);
-		var dir = float2();
-		if (dist > 0.0001)
-			dir = Vector.Normalize(P1.Position - P2.Position);
-
-		P1.ForceAccumulator += f * dir;
-		P2.ForceAccumulator += f * -dir;
-
+		var normalizedBetween = between / dist;
+		P1.ForceAccumulator += GetForce(dt, mass, dist, P1.Velocity, -normalizedBetween);
+		P2.ForceAccumulator += GetForce(dt, mass, dist, P2.Velocity, normalizedBetween);
 	}
 
 }

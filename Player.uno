@@ -66,8 +66,8 @@ public partial class Player : Panel
 			var dummyParticle2 = new Particle();
 			var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
 			dummyParticle2.Mass = 10.f;
-			dummyParticle2.Position.X = (float)Math.Cos(x) * 200;
-			dummyParticle2.Position.Y = (float)Math.Sin(x) * 200;
+			dummyParticle2.Position.X = (float)Math.Cos(x) * 400;
+			dummyParticle2.Position.Y = (float)Math.Sin(x) * 400;
 			AddParticle(dummyParticle2);
 		}
 
@@ -90,8 +90,9 @@ public partial class Player : Panel
         var translation = (Translation)particle.Renderer.Transforms[0];
         var p = particle.Particle;
 
-        p.Position += p.Velocity * dt;
-        p.Velocity += (p.ForceAccumulator / p.Mass) * dt;
+        var acc = p.ForceAccumulator / p.Mass;
+        p.Position += p.Velocity * dt + 0.5f * acc * dt * dt;
+        p.Velocity += acc * dt;
         p.ForceAccumulator = float2(0);
 
         translation.X = p.Position.X;
