@@ -45,6 +45,7 @@ public class Spring : PhysicsRule
 		var x = Vector.Distance(P1.Position, P2.Position) - Length;
 
 		var f = -((massRed / dt*dt) * Coef) * x - (massRed/dt * Damping);
+		return f;
 	}
 
 	public void Step(float dt)
