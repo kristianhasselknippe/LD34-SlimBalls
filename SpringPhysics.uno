@@ -64,15 +64,13 @@ public class Spring : PhysicsRule
 		var massRed = GetReducedMass();
 
 		var x = Vector.Distance(P1.Position, P2.Position) - Length;
-
-		debug_log("X: " + x);
-		debug_log("MassRed: " + massRed);
-		debug_log("DT: " + dt);
-
-
 		var f = -((massRed / dt*dt) * Coef * x) - (massRed/dt * Damping);
 
-		debug_log("F:" + f);
+
+		/*debug_log("X: " + x);
+		debug_log("MassRed: " + massRed);
+		debug_log("DT: " + dt);
+		debug_log("F:" + f);*/
 
 		return f;
 	}
@@ -81,7 +79,11 @@ public class Spring : PhysicsRule
 	{
 		var f = GetForce(dt);
 
-		var dir = Vector.Normalize(P1.Position - P2.Position);
+		var dist = Vector.Distance(P1.Position, P2.Position);
+		var dir = float2();
+		if (dist > 0.0001)
+			dir = Vector.Normalize(P1.Position - P2.Position);
+
 		P1.ForceAccumulator += f * dir;
 		P2.ForceAccumulator += f * -dir;
 
