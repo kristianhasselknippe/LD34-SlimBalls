@@ -60,11 +60,18 @@ public partial class Player : Panel
 
         MainParticle = CreateParticleElement(new Particle() { Mass = 10.f });
 
-        var dummyParticle2 = new Particle();
-        dummyParticle2.Mass = 10.f;
-        dummyParticle2.Position.X = 400;
-        dummyParticle2.Position.Y = 50;
-        AddParticle(dummyParticle2);
+
+		for (var i = 0; i < 10; i++)
+		{
+			var dummyParticle2 = new Particle();
+			var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
+			dummyParticle2.Mass = 10.f;
+			dummyParticle2.Position.X = (float)Math.Cos(x) * 200;
+			dummyParticle2.Position.Y = (float)Math.Sin(x) * 200;
+			AddParticle(dummyParticle2);
+		}
+
+
 
         scene.OnAfterPhysic += OnUpdate;
     }
