@@ -104,6 +104,7 @@ class CollisionManager
             {
                 _fadeEnd = (float)Fuse.Time.FrameTime + 2.f;
                 _player.OnHitEnemy(enemy, particlesHit.First());
+                break;
             }
         }
     }
