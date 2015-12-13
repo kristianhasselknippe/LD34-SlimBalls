@@ -7,6 +7,86 @@ using Fuse.Drawing.Primitives;
 
 namespace Fuse.Effects
 {
+	public sealed class Bloom : BasicEffect
+	{
+		public Bloom() : base(EffectType.Composition)
+		{
+			Radius = 50;
+		}
+
+		float _radius;
+		[Range(0, 100, 2)]
+		public float Radius
+		{
+			get { return _radius; }
+			set
+			{
+				if (_radius != value)
+				{
+					_radius = value;
+
+					OnRenderingChanged();
+					OnRenderBoundsChanged();
+				}
+			}
+		}
+
+		public override Rect ModifyRenderBounds( Rect inBounds )
+		{
+			return Rect.Inflate(inBounds, Padding);
+		}
+
+		internal float Sigma { get { return Math.Max(Radius, 1e-5f); } }
+		internal float Padding
+		{
+			get { return Math.Ceil(Sigma * 3 * Element.AbsoluteZoom) / Element.AbsoluteZoom; }
+		}
+
+		float _strength;
+		public float Strength
+		{
+			get { return _strength; }
+			set
+			{
+				_strength = value;
+				OnRenderingChanged();
+			}
+		}
+
+		protected override void OnRender(DrawContext dc, Rect elementRect)
+		{
+			if(Strength < 0.001f)
+				return;
+
+			Rect paddedRect = Rect.Inflate(elementRect, Padding);
+
+			// capture stuff
+			var original = Element.CaptureRegion(dc, paddedRect, int2(0));
+			if (original == null)
+				return;
+
+			var blur = new Metafill().Blur(original.ColorBuffer, dc, Sigma * Element.AbsoluteZoom);
+			FramebufferPool.Release(original);
+
+			draw Fuse.Drawing.Planar.Image
+			{
+				DrawContext: dc;
+				Node: Element;
+				Position: elementRect.Minimum - Padding;
+				Invert: true;
+				Size: paddedRect.Size;
+				Texture: blur.ColorBuffer;
+
+				float4 BlurColor: Strength * sample(blur.ColorBuffer, TexCoord, Uno.Graphics.SamplerState.LinearClamp) +
+				 sample(original.ColorBuffer, TexCoord, Uno.Graphics.SamplerState.LinearClamp);
+
+				PixelColor: BlurColor;
+			};
+
+			FramebufferPool.Release(blur);
+		}
+	}
+
 	public sealed class Metafill : BasicEffect
 	{
 		public Metafill() :
@@ -82,7 +162,9 @@ namespace Fuse.Effects
 
 		protected override void OnRender(DrawContext dc, Rect elementRect)
 		{
-			Rect paddedRect = Rect.Inflate(elementRect, Padding);
+			var windowCoords = Application.Current.Window.ClientSize;
+			var halfSize = (float2)(windowCoords);
+			Rect paddedRect = Rect.Inflate(elementRect, Padding);//Rect.Inflate(new Rect(0, 0, halfSize.X, halfSize.Y), Padding);
 
 			// capture stuff
 			var original = Element.CaptureRegion(dc, paddedRect, int2(0));

@@ -39,9 +39,10 @@
 
 
 
-		<Panel ux:Name="pointerPanel" HitTestMode="LocalBoundsAndChildren" CachingMode="Never">
+		<Panel Background="#000" ux:Name="pointerPanel" HitTestMode="LocalBoundsAndChildren" CachingMode="Never">
 			<Blur Radius="30" ux:Name="blur"/>
 			<Panel ux:Name="scene">
+				<Bloom ux:Name="bloom" />
 				<Metafill Radius="8" Threshold="0.5" Smoothing="0.01" Color="#f2f" />
 
 			</Panel>

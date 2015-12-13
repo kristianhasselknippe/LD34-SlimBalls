@@ -70,7 +70,7 @@ public partial class MainView
             var enemy = new Enemy(s, s.SpringPhysics, (randGen.NextFloat2() - 0.5f) * 1200, randGen.NextInt(1, 4), randGen);
             enemies.Add(enemy);
         }
-        s.CollisionManager = new CollisionManager(player, enemies);
+        s.CollisionManager = new CollisionManager(player, enemies, bloom);
     }
 }
 
@@ -78,22 +78,33 @@ class CollisionManager
 {
     readonly Player _player;
     readonly List<Enemy> _enemies;
+    readonly Fuse.Effects.Bloom _bloom;
+    float _fadeEnd;
 
-    public CollisionManager(Player player, List<Enemy> enemies)
+    public CollisionManager(Player player, List<Enemy> enemies, Fuse.Effects.Bloom bloom)
     {
         _player = player;
         _enemies = enemies;
+        _bloom = bloom;
     }
 
     public void Update()
     {
+        if((float)Fuse.Time.FrameTime < _fadeEnd)
+            _bloom.Strength = 2.f * Math.Sin((float)Math.PI * 0.5f * (1.0f - ((_fadeEnd - (float)Fuse.Time.FrameTime) / 2.f)) + (float)Math.PI * 0.5f);
+        else
+            _bloom.Strength = 0.f;
+
         foreach(var enemy in _enemies)
         {
             var particlesHit = _player._slimeBall.HitTest(enemy);
 
             // We may only take one per frame else the whole system will be degenerated into a big mess.
             if(particlesHit.Count() > 0)
+            {
+                _fadeEnd = (float)Fuse.Time.FrameTime + 2.f;
                 _player.OnHitEnemy(enemy, particlesHit.First());
+            }
         }
     }
 }
