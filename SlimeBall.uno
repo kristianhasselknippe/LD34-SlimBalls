@@ -6,7 +6,7 @@ using Fuse.Controls;
 
 public class SlimeBall : Panel
 {
-    const float Radius = 70;
+    const float Radius = 30;
     public ParticleElement MainParticle
     {
         get
@@ -41,8 +41,8 @@ public class SlimeBall : Panel
 
             var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
             dummyParticle2.Mass = 10.f;
-            dummyParticle2.Position.X = (float)Math.Cos(x) * 80 + startingPos.X;
-            dummyParticle2.Position.Y = (float)Math.Sin(x) * 80 + startingPos.Y;
+            dummyParticle2.Position.X = (float)Math.Cos(x) * 1.2f * Radius + startingPos.X;
+            dummyParticle2.Position.Y = (float)Math.Sin(x) * 1.2f * Radius + startingPos.Y;
             AddParticle(dummyParticle2);
         }
 
@@ -100,7 +100,7 @@ public class SlimeBall : Panel
     {
         if(MainParticle != null)
         {
-            var spring = new Spring(MainParticle.Particle, particle, 40f);
+            var spring = new Spring(MainParticle.Particle, particle, 0.3f * (MainParticle.Particle.Radius + particle.Radius));
             _springPhysics.AddSpring(spring);
             _springs.Add(spring);
         }
@@ -113,6 +113,7 @@ public class SlimeBall : Panel
         var particleRenderer = new ParticleRender();
         particleRenderer.Transforms.Add(new Translation());
         particleRenderer.Fill = new Fuse.Drawing.StaticSolidColor(_color);
+        particleRenderer.Width = particle.Radius;
         _scene.AddGameObject(particleRenderer);
 
         return new ParticleElement(particle, particleRenderer);
