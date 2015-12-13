@@ -8,6 +8,7 @@ public class Enemy : SlimeBall
     const float Speed = 4000;
     readonly Random _randomGenerator;
     float2 _targetPos;
+    readonly Scene _scene;
 
     public Enemy(
         Scene scene,
@@ -16,6 +17,7 @@ public class Enemy : SlimeBall
         Random randomGenerator)
         : base(scene, springPhysics, startingPos, float4(0.8f, 0.9f, 0.2f, 1))
     {
+        _scene = scene;
         scene.OnAfterPhysic += OnUpdate;
         _randomGenerator = randomGenerator;
     }
@@ -26,7 +28,13 @@ public class Enemy : SlimeBall
             _targetPos = CreateTargetPos();
 
         var toTarget = _targetPos - MainParticle.Particle.Position;
-        MainParticle.Particle.Velocity += Vector.Normalize(toTarget) * Speed * dt;
+        MainParticle.Particle.Velocity += Vector.Normalize(toTarget) * Speed * (GetNumParticles() / 20.f) * dt;
+    }
+
+    public override void Kill()
+    {
+        base.Kill();
+        _scene.OnAfterPhysic -= OnUpdate;
     }
 
     float2 CreateTargetPos()

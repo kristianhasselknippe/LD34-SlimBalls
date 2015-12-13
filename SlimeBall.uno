@@ -6,30 +6,39 @@ using Fuse.Controls;
 
 public class SlimeBall : Panel
 {
-    public readonly ParticleElement MainParticle;
+    const float Radius = 70;
+    public ParticleElement MainParticle
+    {
+        get
+        {
+            return _particles.Count > 0 ? _particles[0] : null;
+        }
+    }
+
     readonly List<ParticleElement> _particles = new List<ParticleElement>();
     readonly Scene _scene;
     readonly SpringPhysics _springPhysics;
+    readonly List<Spring> _springs = new List<Spring>();
     readonly float4 _color;
 
     public SlimeBall(
         Scene scene,
         SpringPhysics springPhysics,
         float2 startingPos = float2(0),
-        float4 color = float4(1.f, 0.3f, 1.f, 1.f))
+        float4 color = float4(1.f, 0.3f, 1.f, 1.f),
+        int numStartingParticles = 3)
     {
         _scene = scene;
         _color = color;
         _springPhysics = springPhysics;
-        MainParticle = CreateParticleElement(new Particle()
-        {
-            Position = startingPos,
-            Mass = 10.f
-        });
 
-        for (var i = 0; i < 20; i++)
+        for (var i = 0; i < numStartingParticles; i++)
         {
-            var dummyParticle2 = new Particle();
+            var dummyParticle2 = new Particle()
+            {
+                Radius = Radius
+            };
+
             var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
             dummyParticle2.Mass = 10.f;
             dummyParticle2.Position.X = (float)Math.Cos(x) * 80 + startingPos.X;
@@ -38,17 +47,16 @@ public class SlimeBall : Panel
         }
 
         scene.OnAfterPhysic += OnUpdate;
-        scene.OnBeforePhysic += OnBefore;
     }
 
-    void OnBefore(float dt)
+    public int GetNumParticles()
     {
-
+        return _particles.Count;
     }
 
     void OnUpdate(float dt)
     {
-        for(var i = 0;i < _particles.Count;++i)
+        for(var i = 1;i < _particles.Count;++i)
         {
             for(var j = i+1;j < _particles.Count;++j)
             {
@@ -67,7 +75,6 @@ public class SlimeBall : Panel
             }
         }
 
-        UpdateParticle(dt, MainParticle);
         foreach(var particle in _particles)
         {
             UpdateParticle(dt, particle);
@@ -91,8 +98,13 @@ public class SlimeBall : Panel
 
     public void AddParticle(Particle particle)
     {
-        var spring = new Spring(MainParticle.Particle, particle, 40f);
-        _springPhysics.AddSpring(spring);
+        if(MainParticle != null)
+        {
+            var spring = new Spring(MainParticle.Particle, particle, 40f);
+            _springPhysics.AddSpring(spring);
+            _springs.Add(spring);
+        }
+
         _particles.Add(CreateParticleElement(particle));
     }
 
@@ -106,8 +118,62 @@ public class SlimeBall : Panel
         return new ParticleElement(particle, particleRenderer);
     }
 
+    public virtual void Kill()
+    {
+        debug_log "I am dead";
+        _scene.OnAfterPhysic -= OnUpdate;
+    }
+
     public void RemoveParticle(Particle particle)
     {
-        //_particles.Remove(particle);
+        ParticleElement foundParticle = null;
+        foreach(var p in _particles)
+        {
+            if(p.Particle == particle)
+            {
+                foundParticle = p;
+                break;
+            }
+        }
+
+        if(foundParticle != null)
+        {
+            _particles.Remove(foundParticle);
+            _scene.RemoveGameObject(foundParticle.Renderer);
+
+            Spring foundSpring = null;
+            foreach(var spring in _springs)
+            {
+                if(spring.P2 == particle)
+                {
+                    foundSpring = spring;
+                    break;
+                }
+            }
+
+            if(foundSpring != null)
+                _springs.Remove(foundSpring);
+
+            if(_particles.Count == 0)
+                Kill();
+        }
+    }
+
+    public IEnumerable<Particle> HitTest(SlimeBall slimeBall)
+    {
+        var particlesHit = new List<Particle>();
+        foreach(var pp1 in _particles)
+        {
+            var p1 = pp1.Particle;
+            foreach(var pp2 in slimeBall._particles)
+            {
+                var p2 = pp2.Particle;
+
+                if(CollisionMethods.CircleWithCircle(p1.Position, p1.Radius, p2.Position, p2.Radius) != null)
+                    particlesHit.Add(p2);
+            }
+        }
+
+        return particlesHit;
     }
 }

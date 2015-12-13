@@ -37,20 +37,14 @@ public class ParticleElement
 
 public class Player
 {
-    readonly SlimeBall _slimeBall;
+    public readonly SlimeBall _slimeBall;
 	readonly PlayerController _playerController;
     public Player(Scene scene, SlimeBall slimeBall, PlayerController controller)
     {
         _slimeBall = slimeBall;
 		_playerController = controller;
         scene.OnAfterPhysic += OnUpdate;
-		scene.OnBeforePhysic += OnBefore;
     }
-
-	void OnBefore(float dt)
-	{
-
-	}
 
     void OnUpdate(float dt)
     {
@@ -58,8 +52,28 @@ public class Player
 		var pointerForce = float2(0);
 		if (_playerController.HasPosition && Vector.Distance(pointerPos, _slimeBall.MainParticle.Particle.Position) > 0.1)
         {
-			pointerForce = Vector.Normalize(pointerPos - _slimeBall.MainParticle.Particle.Position) * 10000;
+			pointerForce = Vector.Normalize(pointerPos - _slimeBall.MainParticle.Particle.Position) * 10000 * (_slimeBall.GetNumParticles() / 20.f);
 	        _slimeBall.MainParticle.Particle.Velocity += pointerForce * dt;
+        }
+    }
+
+    public void Kill()
+    {
+        debug_log "Kill me!";
+    }
+
+    public void OnHitEnemy(Enemy enemy, Particle particleHit)
+    {
+        if(enemy.GetNumParticles() > _slimeBall.GetNumParticles())
+        {
+            Kill();
+            return;
+        }
+        else
+        {
+            // Steal that shit
+            enemy.RemoveParticle(particleHit);
+            _slimeBall.AddParticle(particleHit);
         }
     }
 }

@@ -1,5 +1,5 @@
 <App Theme="Basic" ux:AutoCtor="false">
-	<Panel>
+	<Panel CachingMode="Never">
 		<HighScore ux:Global="HighScore" />
 		<JavaScript File="MainView.js" />
 		<Panel ux:Name="menu">
@@ -39,7 +39,7 @@
 
 
 
-		<Panel ux:Name="pointerPanel" HitTestMode="LocalBoundsAndChildren">
+		<Panel ux:Name="pointerPanel" HitTestMode="LocalBoundsAndChildren" CachingMode="Never">
 			<Blur Radius="30" ux:Name="blur"/>
 			<Panel ux:Name="scene">
 				<Metafill Radius="8" Threshold="0.5" Smoothing="0.01" Color="#f2f" />

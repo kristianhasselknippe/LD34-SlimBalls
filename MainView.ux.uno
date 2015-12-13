@@ -14,7 +14,6 @@ public class Scene
     {
         _scenePanel = p;
 		UpdateManager.AddAction(Update);
-
     }
 
     public void AddGameObject(Element e)
@@ -23,10 +22,18 @@ public class Scene
         _scenePanel.Children.Add(e);
     }
 
+    public void RemoveGameObject(Element e)
+    {
+        _gameObjects.Remove(e);
+        _scenePanel.Children.Remove(e);
+    }
+
 	public event Action<float> OnBeforePhysic;
 	public event Action<float> OnAfterPhysic;
 
 	public readonly SpringPhysics SpringPhysics = new SpringPhysics();
+
+    public CollisionManager CollisionManager;
 
 	public void Update()
 	{
@@ -39,6 +46,9 @@ public class Scene
 
 		if (OnAfterPhysic != null)
 			OnAfterPhysic(dt);
+
+        if(CollisionManager != null)
+            CollisionManager.Update();
 	}
 }
 
@@ -50,11 +60,40 @@ public partial class MainView
 
         var s = new Scene(scene);
 		var controller = new PlayerController(pointerPanel);
+
+        List<Enemy> enemies = new List<Enemy>();
         var player = new Player(s, new SlimeBall(s, s.SpringPhysics), controller);
         var randGen = new Random(1337);
-        var enemy = new Enemy(s, s.SpringPhysics, float2(0), randGen);
-        s.AddGameObject(enemy);
+
+        for(var i = 0;i < 20;++i)
+        {
+            var enemy = new Enemy(s, s.SpringPhysics, (randGen.NextFloat2() - 0.5f) * 1200, randGen);
+            enemies.Add(enemy);
+        }
+        s.CollisionManager = new CollisionManager(player, enemies);
+    }
+}
+
+class CollisionManager
+{
+    readonly Player _player;
+    readonly List<Enemy> _enemies;
+
+    public CollisionManager(Player player, List<Enemy> enemies)
+    {
+        _player = player;
+        _enemies = enemies;
     }
 
+    public void Update()
+    {
+        foreach(var enemy in _enemies)
+        {
+            var particlesHit = _player._slimeBall.HitTest(enemy);
 
+            // We may only take one per frame else the whole system will be degenerated into a big mess.
+            if(particlesHit.Count() > 0)
+                _player.OnHitEnemy(enemy, particlesHit.First());
+        }
+    }
 }
