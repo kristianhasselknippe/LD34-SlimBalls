@@ -111,7 +111,10 @@ public class SlimeBall : Panel
     public ParticleElement CreateParticleElement(Particle particle)
     {
         var particleRenderer = new ParticleRender();
-        particleRenderer.Transforms.Add(new Translation());
+        var translation = new Translation();
+        translation.X = particle.Position.X;
+        translation.Y = particle.Position.Y;
+        particleRenderer.Transforms.Add(translation);
         particleRenderer.Fill = new Fuse.Drawing.StaticSolidColor(_color);
         particleRenderer.Width = particle.Radius;
         _scene.AddGameObject(particleRenderer);
