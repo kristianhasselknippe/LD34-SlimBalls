@@ -53,9 +53,7 @@ public partial class MainView
 
         var s = new Scene(scene);
 		var controller = new PlayerController(pointerPanel);
-        var player = new Player(s, s.SpringPhysics, controller);
-        s.AddGameObject(player);
-
+        var player = new Player(s, new SlimeBall(s, s.SpringPhysics), controller);
     }
 
 

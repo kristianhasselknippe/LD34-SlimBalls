@@ -1,3 +1,0 @@
-<Panel ux:Class="Player" MinWidth="30" Alignment="Center" ux:AutoCtor="false">
-  <Circle Fill="Green" Width="70" ux:AutoBind="false" ux:Class="ParticleRender" />
-</Panel>
