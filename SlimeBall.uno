@@ -40,7 +40,7 @@ public class SlimeBall : Panel
             };
 
             var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
-            dummyParticle2.Mass = 10.f;
+            dummyParticle2.Mass = 1.f;
             dummyParticle2.Position.X = (float)Math.Cos(x) * 1.2f * Radius + startingPos.X;
             dummyParticle2.Position.Y = (float)Math.Sin(x) * 1.2f * Radius + startingPos.Y;
             AddParticle(dummyParticle2);
@@ -69,8 +69,8 @@ public class SlimeBall : Panel
                 if(dist > 0.5 && delta < 0.)
                 {
                     var norm = toTarget / dist;
-                    p1.ForceAccumulator += norm * delta * 200;
-                    p2.ForceAccumulator -= norm * delta * 200;
+                    p1.ForceAccumulator += norm * delta * 20;
+                    p2.ForceAccumulator -= norm * delta * 20;
                 }
             }
         }
