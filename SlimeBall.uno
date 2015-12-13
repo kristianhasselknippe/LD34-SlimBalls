@@ -40,7 +40,7 @@ public class SlimeBall : Panel
             };
 
             var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
-            dummyParticle2.Mass = 1.f;
+            dummyParticle2.Mass = 2.f;
             dummyParticle2.Position.X = (float)Math.Cos(x) * 1.2f * Radius + startingPos.X;
             dummyParticle2.Position.Y = (float)Math.Sin(x) * 1.2f * Radius + startingPos.Y;
             AddParticle(dummyParticle2);

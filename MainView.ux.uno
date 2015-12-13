@@ -62,12 +62,12 @@ public partial class MainView
 		var controller = new PlayerController(pointerPanel);
 
         List<Enemy> enemies = new List<Enemy>();
-        var player = new Player(s, new SlimeBall(s, s.SpringPhysics), controller);
+        var player = new Player(s, new SlimeBall(s, s.SpringPhysics, float2(0), float4(1.f, 0.3f, 1.f, 1.f), 1), controller);
         var randGen = new Random(1337);
 
         for(var i = 0;i < 20;++i)
         {
-            var enemy = new Enemy(s, s.SpringPhysics, (randGen.NextFloat2() - 0.5f) * 1200, randGen);
+            var enemy = new Enemy(s, s.SpringPhysics, (randGen.NextFloat2() - 0.5f) * 1200, randGen.NextInt(1, 4), randGen);
             enemies.Add(enemy);
         }
         s.CollisionManager = new CollisionManager(player, enemies);

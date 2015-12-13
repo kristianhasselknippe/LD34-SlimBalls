@@ -14,8 +14,9 @@ public class Enemy : SlimeBall
         Scene scene,
         SpringPhysics springPhysics,
         float2 startingPos,
+        int numStartingParticles,
         Random randomGenerator)
-        : base(scene, springPhysics, startingPos, float4(0.8f, 0.9f, 0.2f, 1))
+        : base(scene, springPhysics, startingPos, float4(0.8f, 0.9f, 0.2f, 1), numStartingParticles)
     {
         _scene = scene;
         scene.OnAfterPhysic += OnUpdate;
@@ -24,7 +25,7 @@ public class Enemy : SlimeBall
 
     void OnUpdate(float dt)
     {
-        if(Vector.Distance(MainParticle.Particle.Position, _targetPos) < 3.)
+        if(Vector.Distance(MainParticle.Particle.Position, _targetPos) < 2.)
             _targetPos = CreateTargetPos();
 
         var toTarget = _targetPos - MainParticle.Particle.Position;
