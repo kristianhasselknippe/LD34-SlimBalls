@@ -9,21 +9,31 @@ public class SlimeBall : Panel
     public readonly ParticleElement MainParticle;
     readonly List<ParticleElement> _particles = new List<ParticleElement>();
     readonly Scene _scene;
-
     readonly SpringPhysics _springPhysics;
-    public SlimeBall(Scene scene, SpringPhysics springPhysics)
+    readonly float4 _color;
+
+    public SlimeBall(
+        Scene scene,
+        SpringPhysics springPhysics,
+        float2 startingPos = float2(0),
+        float4 color = float4(1.f, 0.3f, 1.f, 1.f))
     {
         _scene = scene;
+        _color = color;
         _springPhysics = springPhysics;
-        MainParticle = CreateParticleElement(new Particle() { Mass = 10.f });
+        MainParticle = CreateParticleElement(new Particle()
+        {
+            Position = startingPos,
+            Mass = 10.f
+        });
 
         for (var i = 0; i < 20; i++)
         {
             var dummyParticle2 = new Particle();
             var x = Math.Lerp(0, 2 * Math.PI, i / 10.0);
             dummyParticle2.Mass = 10.f;
-            dummyParticle2.Position.X = (float)Math.Cos(x) * 80;
-            dummyParticle2.Position.Y = (float)Math.Sin(x) * 80;
+            dummyParticle2.Position.X = (float)Math.Cos(x) * 80 + startingPos.X;
+            dummyParticle2.Position.Y = (float)Math.Sin(x) * 80 + startingPos.Y;
             AddParticle(dummyParticle2);
         }
 
@@ -90,6 +100,7 @@ public class SlimeBall : Panel
     {
         var particleRenderer = new ParticleRender();
         particleRenderer.Transforms.Add(new Translation());
+        particleRenderer.Fill = new Fuse.Drawing.StaticSolidColor(_color);
         _scene.AddGameObject(particleRenderer);
 
         return new ParticleElement(particle, particleRenderer);

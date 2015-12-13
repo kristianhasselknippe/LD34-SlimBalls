@@ -40,9 +40,6 @@ public class Scene
 		if (OnAfterPhysic != null)
 			OnAfterPhysic(dt);
 	}
-
-
-
 }
 
 public partial class MainView
@@ -54,6 +51,8 @@ public partial class MainView
         var s = new Scene(scene);
 		var controller = new PlayerController(pointerPanel);
         var player = new Player(s, new SlimeBall(s, s.SpringPhysics), controller);
+        var enemy = new Enemy(s, s.SpringPhysics, float2(0));
+        s.AddGameObject(enemy);
     }
 
 

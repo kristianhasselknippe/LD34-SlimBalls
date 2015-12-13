@@ -108,13 +108,13 @@ namespace Fuse.Effects
 				float Value: BlurColor.W;
 				float Contour: Math.SmoothStep(_threshold-_smoothing, _threshold+_smoothing, Value);
 
-				PixelColor: float4(_color.XYZ, _color.W*Contour);
+				PixelColor: float4(BlurColor.XYZ, _color.W*Contour);
 			};
 
 			FramebufferPool.Release(blur);
 		}
 
-public framebuffer Blur(texture2D original, DrawContext dc, float sigma)
+		public framebuffer Blur(texture2D original, DrawContext dc, float sigma)
 		{
 			int maxSamples = 3;
 			texture2D src = original;
